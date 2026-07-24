@@ -22,4 +22,19 @@ CREATE TABLE IF NOT EXISTS app_sessions (
 
 CREATE INDEX IF NOT EXISTS app_sessions_user_expiry_idx
   ON app_sessions (user_id, expires_at);
+
+CREATE TABLE IF NOT EXISTS application_ai_results (
+  id UUID PRIMARY KEY,
+  user_id UUID NOT NULL REFERENCES app_users(id) ON DELETE RESTRICT,
+  tool_id TEXT NOT NULL,
+  prompt TEXT NOT NULL,
+  model TEXT NOT NULL,
+  provider_receipt JSONB NOT NULL,
+  result TEXT NOT NULL,
+  usage JSONB,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+CREATE INDEX IF NOT EXISTS application_ai_results_user_created_idx
+  ON application_ai_results (user_id, created_at DESC);
 COMMIT;
